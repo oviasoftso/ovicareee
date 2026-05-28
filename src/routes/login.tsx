@@ -45,7 +45,7 @@ function LoginPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       <div className="relative hidden lg:flex gradient-hero items-center justify-center p-12 overflow-hidden">
-        <div className="absolute inset-0 opacity-40" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, oklch(0.76 0.14 180 / 0.6), transparent 50%)" }} />
+        <div className="absolute inset-0 opacity-15" style={{ backgroundImage: "radial-gradient(circle at 30% 20%, oklch(0.76 0.14 180 / 0.3), transparent 50%)" }} />
         <div className="relative z-10 max-w-md text-white">
           <Logo variant="light" size="lg" />
           <h2 className="mt-12 text-4xl font-display font-bold leading-tight">Intelligent Pharmacy.<br/>Healthier Communities.</h2>

@@ -12,24 +12,44 @@ function Financials() {
   const { data } = useQuery({
     queryKey: ["financials"],
     queryFn: async () => {
-      const { data: sales } = await supabase.from("sales").select("total_amount, sale_date, branches(name)").gte("sale_date", new Date(Date.now() - 30 * 86400000).toISOString());
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+      const [{ data: sales }, { data: expenses }] = await Promise.all([
+        supabase.from("sales").select("total_amount, sale_date, branches(name)").gte("sale_date", thirtyDaysAgo),
+        supabase.from("expenses").select("amount, expense_date, category, branch_id").gte("expense_date", thirtyDaysAgo),
+      ]);
+
       const rev = (sales ?? []).reduce((a: number, s: any) => a + Number(s.total_amount), 0);
-      const exp = rev * 0.62;
+      const exp = (expenses ?? []).reduce((a: number, e: any) => a + Number(e.amount), 0);
+
       const byDay: Record<string, { rev: number; exp: number }> = {};
       (sales ?? []).forEach((s: any) => {
         const k = new Date(s.sale_date).toISOString().split("T")[0];
         if (!byDay[k]) byDay[k] = { rev: 0, exp: 0 };
         byDay[k].rev += Number(s.total_amount);
-        byDay[k].exp += Number(s.total_amount) * 0.62;
       });
+      (expenses ?? []).forEach((e: any) => {
+        const k = new Date(e.expense_date).toISOString().split("T")[0];
+        if (!byDay[k]) byDay[k] = { rev: 0, exp: 0 };
+        byDay[k].exp += Number(e.amount);
+      });
+
       const chart = Object.entries(byDay).sort().map(([d, v]) => ({ date: d.slice(5), revenue: Number(v.rev.toFixed(2)), expenses: Number(v.exp.toFixed(2)) }));
+
       const byBranch: Record<string, number> = {};
       (sales ?? []).forEach((s: any) => {
         const n = s.branches?.name ?? "Unknown";
         byBranch[n] = (byBranch[n] ?? 0) + Number(s.total_amount);
       });
       const branchData = Object.entries(byBranch).map(([name, value]) => ({ name, revenue: Number(value.toFixed(2)) }));
-      return { rev, exp, profit: rev - exp, margin: rev ? ((rev - exp) / rev) * 100 : 0, chart, branchData };
+
+      const expByCategory: Record<string, number> = {};
+      (expenses ?? []).forEach((e: any) => {
+        const cat = e.category ?? "Other";
+        expByCategory[cat] = (expByCategory[cat] ?? 0) + Number(e.amount);
+      });
+      const expenseCategories = Object.entries(expByCategory).map(([name, value]) => ({ name, value: Number(value.toFixed(2)) }));
+
+      return { rev, exp, profit: rev - exp, margin: rev ? ((rev - exp) / rev) * 100 : 0, chart, branchData, expenseCategories };
     },
   });
 
@@ -65,6 +85,19 @@ function Financials() {
           </ResponsiveContainer></div>
         </div>
       </div>
+      {data?.expenseCategories && data.expenseCategories.length > 0 && (
+        <div className="mt-6 rounded-2xl bg-card border p-6 shadow-card">
+          <h3 className="font-display font-semibold text-lg mb-4">Expense Breakdown</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {data.expenseCategories.map((cat) => (
+              <div key={cat.name} className="rounded-lg bg-muted/40 p-4 text-center">
+                <div className="text-sm text-muted-foreground capitalize">{cat.name}</div>
+                <div className="text-xl font-display font-bold mt-1">{fmtMoney(cat.value)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </PageShell>
   );
 }

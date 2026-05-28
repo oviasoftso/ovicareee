@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard, ShoppingCart, Package, FileText, Users, DollarSign,
   Building2, UserCog, BarChart3, Award, Bell, Settings, ShieldAlert,
-  LogOut, Stethoscope,
+  LogOut, Stethoscope, Truck, Wallet, TrendingUp,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useAuth, roleLabel, AppRole } from "@/lib/auth";
@@ -22,6 +22,9 @@ const NAV: NavItem[] = [
   { to: "/app/staff", label: "Staff", icon: UserCog, roles: ["super_admin","director","branch_manager"] },
   { to: "/app/reports", label: "Reports", icon: BarChart3, roles: ["super_admin","director","branch_manager"] },
   { to: "/app/loyalty", label: "Loyalty", icon: Award, roles: ["super_admin","director","branch_manager"] },
+  { to: "/app/suppliers", label: "Suppliers", icon: Truck, roles: ["super_admin","director","branch_manager","inventory_clerk"] },
+  { to: "/app/cash-drawer", label: "Cash Drawer", icon: Wallet, roles: ["super_admin","branch_manager","cashier"] },
+  { to: "/app/performance", label: "Performance", icon: TrendingUp, roles: ["super_admin","director","branch_manager"] },
   { to: "/app/notifications", label: "Notifications", icon: Bell, roles: ALL },
   { to: "/app/settings", label: "Settings", icon: Settings, roles: ["super_admin","director","branch_manager"] },
   { to: "/app/super-admin", label: "Super Admin", icon: ShieldAlert, roles: ["super_admin"] },

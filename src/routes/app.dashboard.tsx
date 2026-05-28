@@ -36,8 +36,13 @@ function Dashboard() {
   const { data: topProducts } = useQuery({
     queryKey: ["top-products"],
     queryFn: async () => {
-      const { data } = await supabase.from("products").select("name, selling_price").limit(8);
-      return (data ?? []).map((p: any) => ({ name: p.name.slice(0, 14), value: Number(p.selling_price) * (10 + Math.floor(Math.random() * 40)) }));
+      const { data } = await supabase.from("sale_items").select("product_name, total_price").order("total_price", { ascending: false }).limit(50);
+      const grouped: Record<string, number> = {};
+      (data ?? []).forEach((item: any) => {
+        const name = (item.product_name ?? "Unknown").slice(0, 14);
+        grouped[name] = (grouped[name] ?? 0) + Number(item.total_price);
+      });
+      return Object.entries(grouped).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([name, value]) => ({ name, value: Number(value.toFixed(2)) }));
     },
   });
 

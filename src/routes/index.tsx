@@ -25,7 +25,7 @@ function Landing() {
       </header>
 
       <section className="relative gradient-hero min-h-[88vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 20% 30%, oklch(0.76 0.14 180 / 0.4), transparent 40%), radial-gradient(circle at 80% 70%, oklch(0.55 0.22 295 / 0.3), transparent 40%)" }} />
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 20% 30%, oklch(0.76 0.14 180 / 0.3), transparent 40%), radial-gradient(circle at 80% 70%, oklch(0.55 0.22 295 / 0.2), transparent 40%)" }} />
         <div className="relative z-10 max-w-5xl mx-auto px-6 text-center text-white">
           <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 px-4 py-1.5 mb-8 text-sm">
             <ShieldCheck className="h-4 w-4 text-primary-glow" /> A product of Ovia Software Solutions
