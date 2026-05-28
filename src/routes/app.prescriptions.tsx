@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { NewPrescriptionDialog } from "@/components/prescriptions/NewPrescriptionDialog";
+import { RefillReminderPanel } from "@/components/prescriptions/RefillReminderPanel";
 
 export const Route = createFileRoute("/app/prescriptions")({ component: Prescriptions });
 
@@ -75,6 +76,7 @@ function Prescriptions() {
       } />
 
       <NewPrescriptionDialog open={dialogOpen} onOpenChange={setDialogOpen} />
+      <RefillReminderPanel />
 
       {!data?.length ? (
         <EmptyState icon={FileText} title="No prescriptions yet" message="Prescriptions you process will appear in the kanban board." />

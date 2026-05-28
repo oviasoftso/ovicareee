@@ -8,6 +8,7 @@ import { fmtMoney } from "@/lib/format";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { Badge } from "@/components/ui/badge";
+import { InsuranceClaimDialog } from "@/components/pos/InsuranceClaimDialog";
 
 export const Route = createFileRoute("/app/pos")({ component: POS });
 
@@ -25,6 +26,7 @@ function POS() {
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
   const [patientSearch, setPatientSearch] = useState("");
   const [showPatientSearch, setShowPatientSearch] = useState(false);
+  const [insuranceDialog, setInsuranceDialog] = useState<{ open: boolean; saleId: string }>({ open: false, saleId: "" });
   const barcodeRef = useRef<HTMLInputElement>(null);
 
   const { data: products } = useQuery({
@@ -120,6 +122,9 @@ function POS() {
       }
     }
 
+    if (payment === "insurance" && selectedPatient) {
+      setInsuranceDialog({ open: true, saleId: (sale as any).id });
+    }
     toast.success(`Sale ${receipt} completed · ${fmtMoney(total)}`);
     setCart([]); setDiscount(0); setSelectedPatient(null); setSubmitting(false);
   };
@@ -223,6 +228,15 @@ function POS() {
           </div>
         </div>
       </div>
+
+      <InsuranceClaimDialog
+        open={insuranceDialog.open}
+        onOpenChange={(open) => setInsuranceDialog({ ...insuranceDialog, open })}
+        saleId={insuranceDialog.saleId}
+        patientId={selectedPatient?.id ?? ""}
+        totalAmount={total}
+        onSuccess={() => toast.success("Claim recorded")}
+      />
     </PageShell>
   );
 }
