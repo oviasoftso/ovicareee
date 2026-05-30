@@ -4,13 +4,16 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { PageShell, PageHeader, EmptyState } from "@/components/PageShell";
 import { fmtDate } from "@/lib/format";
-import { FileText, Plus, ArrowRight, AlertTriangle } from "lucide-react";
+import { FileText, Plus, ArrowRight, AlertTriangle, Calculator, Printer, FlaskConical } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { NewPrescriptionDialog } from "@/components/prescriptions/NewPrescriptionDialog";
 import { RefillReminderPanel } from "@/components/prescriptions/RefillReminderPanel";
+import { DosageCalculator } from "@/components/prescriptions/DosageCalculator";
+import { LabelGenerator } from "@/components/prescriptions/LabelGenerator";
+import { CompoundCalculator } from "@/components/prescriptions/CompoundCalculator";
 
 export const Route = createFileRoute("/app/prescriptions")({ component: Prescriptions });
 
@@ -35,6 +38,9 @@ function Prescriptions() {
   const qc = useQueryClient();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedRx, setSelectedRx] = useState<any>(null);
+  const [dosageCalc, setDosageCalc] = useState(false);
+  const [labelGen, setLabelGen] = useState(false);
+  const [compoundCalc, setCompoundCalc] = useState(false);
 
   const { data } = useQuery({
     queryKey: ["prescriptions"],
@@ -72,7 +78,11 @@ function Prescriptions() {
   return (
     <PageShell>
       <PageHeader title="Prescriptions" subtitle="Dispensing queue across all branches" action={
-        <button onClick={() => setDialogOpen(true)} className="inline-flex items-center gap-2 rounded-lg gradient-primary text-white font-semibold px-4 py-2.5 text-sm shadow-glow"><Plus className="h-4 w-4" /> New prescription</button>
+        <div className="flex gap-2">
+          <button onClick={() => setDosageCalc(true)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium hover:bg-muted"><Calculator className="h-4 w-4" /> Dosage Calc</button>
+          <button onClick={() => setCompoundCalc(true)} className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium hover:bg-muted"><FlaskConical className="h-4 w-4" /> Compound</button>
+          <button onClick={() => setDialogOpen(true)} className="inline-flex items-center gap-2 rounded-lg gradient-primary text-white font-semibold px-4 py-2.5 text-sm shadow-glow"><Plus className="h-4 w-4" /> New prescription</button>
+        </div>
       } />
 
       <NewPrescriptionDialog open={dialogOpen} onOpenChange={setDialogOpen} />
@@ -152,16 +162,25 @@ function Prescriptions() {
                   </div>
                 )}
 
-                {NEXT_STATUS[selectedRx.status] && (
-                  <Button onClick={() => advanceStatus.mutate(selectedRx)} disabled={advanceStatus.isPending} className="w-full gradient-primary text-white">
-                    <ArrowRight className="h-4 w-4 mr-2" /> Move to {NEXT_STATUS[selectedRx.status]}
+                <div className="flex gap-2">
+                  <Button onClick={() => setLabelGen(true)} variant="outline" className="flex-1">
+                    <Printer className="h-4 w-4 mr-2" /> Print Labels
                   </Button>
-                )}
+                  {NEXT_STATUS[selectedRx.status] && (
+                    <Button onClick={() => advanceStatus.mutate(selectedRx)} disabled={advanceStatus.isPending} className="flex-1 gradient-primary text-white">
+                      <ArrowRight className="h-4 w-4 mr-2" /> Move to {NEXT_STATUS[selectedRx.status]}
+                    </Button>
+                  )}
+                </div>
               </div>
             </>
           )}
         </SheetContent>
       </Sheet>
+
+      <DosageCalculator open={dosageCalc} onOpenChange={setDosageCalc} />
+      <CompoundCalculator open={compoundCalc} onOpenChange={setCompoundCalc} />
+      <LabelGenerator open={labelGen} onOpenChange={setLabelGen} prescription={selectedRx} items={rxItems ?? []} />
     </PageShell>
   );
 }
