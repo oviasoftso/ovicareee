@@ -14,7 +14,12 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as CustomerRouteImport } from './routes/customer'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CustomerProfileRouteImport } from './routes/customer.profile'
+import { Route as CustomerPrescriptionsRouteImport } from './routes/customer.prescriptions'
+import { Route as CustomerOrdersRouteImport } from './routes/customer.orders'
+import { Route as CustomerLoyaltyRouteImport } from './routes/customer.loyalty'
 import { Route as CustomerDashboardRouteImport } from './routes/customer.dashboard'
+import { Route as AppSuppliersRouteImport } from './routes/app.suppliers'
 import { Route as AppSuperAdminRouteImport } from './routes/app.super-admin'
 import { Route as AppStaffRouteImport } from './routes/app.staff'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
@@ -22,12 +27,14 @@ import { Route as AppSalesRouteImport } from './routes/app.sales'
 import { Route as AppReportsRouteImport } from './routes/app.reports'
 import { Route as AppPrescriptionsRouteImport } from './routes/app.prescriptions'
 import { Route as AppPosRouteImport } from './routes/app.pos'
+import { Route as AppPerformanceRouteImport } from './routes/app.performance'
 import { Route as AppPatientsRouteImport } from './routes/app.patients'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
 import { Route as AppLoyaltyRouteImport } from './routes/app.loyalty'
 import { Route as AppInventoryRouteImport } from './routes/app.inventory'
 import { Route as AppFinancialsRouteImport } from './routes/app.financials'
 import { Route as AppDashboardRouteImport } from './routes/app.dashboard'
+import { Route as AppCashDrawerRouteImport } from './routes/app.cash-drawer'
 import { Route as AppBranchesRouteImport } from './routes/app.branches'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -55,10 +62,35 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CustomerProfileRoute = CustomerProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerPrescriptionsRoute = CustomerPrescriptionsRouteImport.update({
+  id: '/prescriptions',
+  path: '/prescriptions',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerOrdersRoute = CustomerOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => CustomerRoute,
+} as any)
+const CustomerLoyaltyRoute = CustomerLoyaltyRouteImport.update({
+  id: '/loyalty',
+  path: '/loyalty',
+  getParentRoute: () => CustomerRoute,
+} as any)
 const CustomerDashboardRoute = CustomerDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
   getParentRoute: () => CustomerRoute,
+} as any)
+const AppSuppliersRoute = AppSuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppSuperAdminRoute = AppSuperAdminRouteImport.update({
   id: '/super-admin',
@@ -95,6 +127,11 @@ const AppPosRoute = AppPosRouteImport.update({
   path: '/pos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPerformanceRoute = AppPerformanceRouteImport.update({
+  id: '/performance',
+  path: '/performance',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppPatientsRoute = AppPatientsRouteImport.update({
   id: '/patients',
   path: '/patients',
@@ -125,6 +162,11 @@ const AppDashboardRoute = AppDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCashDrawerRoute = AppCashDrawerRouteImport.update({
+  id: '/cash-drawer',
+  path: '/cash-drawer',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppBranchesRoute = AppBranchesRouteImport.update({
   id: '/branches',
   path: '/branches',
@@ -138,12 +180,14 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/app/branches': typeof AppBranchesRoute
+  '/app/cash-drawer': typeof AppCashDrawerRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/financials': typeof AppFinancialsRoute
   '/app/inventory': typeof AppInventoryRoute
   '/app/loyalty': typeof AppLoyaltyRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/patients': typeof AppPatientsRoute
+  '/app/performance': typeof AppPerformanceRoute
   '/app/pos': typeof AppPosRoute
   '/app/prescriptions': typeof AppPrescriptionsRoute
   '/app/reports': typeof AppReportsRoute
@@ -151,7 +195,12 @@ export interface FileRoutesByFullPath {
   '/app/settings': typeof AppSettingsRoute
   '/app/staff': typeof AppStaffRoute
   '/app/super-admin': typeof AppSuperAdminRoute
+  '/app/suppliers': typeof AppSuppliersRoute
   '/customer/dashboard': typeof CustomerDashboardRoute
+  '/customer/loyalty': typeof CustomerLoyaltyRoute
+  '/customer/orders': typeof CustomerOrdersRoute
+  '/customer/prescriptions': typeof CustomerPrescriptionsRoute
+  '/customer/profile': typeof CustomerProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -160,12 +209,14 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/app/branches': typeof AppBranchesRoute
+  '/app/cash-drawer': typeof AppCashDrawerRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/financials': typeof AppFinancialsRoute
   '/app/inventory': typeof AppInventoryRoute
   '/app/loyalty': typeof AppLoyaltyRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/patients': typeof AppPatientsRoute
+  '/app/performance': typeof AppPerformanceRoute
   '/app/pos': typeof AppPosRoute
   '/app/prescriptions': typeof AppPrescriptionsRoute
   '/app/reports': typeof AppReportsRoute
@@ -173,7 +224,12 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AppSettingsRoute
   '/app/staff': typeof AppStaffRoute
   '/app/super-admin': typeof AppSuperAdminRoute
+  '/app/suppliers': typeof AppSuppliersRoute
   '/customer/dashboard': typeof CustomerDashboardRoute
+  '/customer/loyalty': typeof CustomerLoyaltyRoute
+  '/customer/orders': typeof CustomerOrdersRoute
+  '/customer/prescriptions': typeof CustomerPrescriptionsRoute
+  '/customer/profile': typeof CustomerProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -183,12 +239,14 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/app/branches': typeof AppBranchesRoute
+  '/app/cash-drawer': typeof AppCashDrawerRoute
   '/app/dashboard': typeof AppDashboardRoute
   '/app/financials': typeof AppFinancialsRoute
   '/app/inventory': typeof AppInventoryRoute
   '/app/loyalty': typeof AppLoyaltyRoute
   '/app/notifications': typeof AppNotificationsRoute
   '/app/patients': typeof AppPatientsRoute
+  '/app/performance': typeof AppPerformanceRoute
   '/app/pos': typeof AppPosRoute
   '/app/prescriptions': typeof AppPrescriptionsRoute
   '/app/reports': typeof AppReportsRoute
@@ -196,7 +254,12 @@ export interface FileRoutesById {
   '/app/settings': typeof AppSettingsRoute
   '/app/staff': typeof AppStaffRoute
   '/app/super-admin': typeof AppSuperAdminRoute
+  '/app/suppliers': typeof AppSuppliersRoute
   '/customer/dashboard': typeof CustomerDashboardRoute
+  '/customer/loyalty': typeof CustomerLoyaltyRoute
+  '/customer/orders': typeof CustomerOrdersRoute
+  '/customer/prescriptions': typeof CustomerPrescriptionsRoute
+  '/customer/profile': typeof CustomerProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -207,12 +270,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/app/branches'
+    | '/app/cash-drawer'
     | '/app/dashboard'
     | '/app/financials'
     | '/app/inventory'
     | '/app/loyalty'
     | '/app/notifications'
     | '/app/patients'
+    | '/app/performance'
     | '/app/pos'
     | '/app/prescriptions'
     | '/app/reports'
@@ -220,7 +285,12 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/staff'
     | '/app/super-admin'
+    | '/app/suppliers'
     | '/customer/dashboard'
+    | '/customer/loyalty'
+    | '/customer/orders'
+    | '/customer/prescriptions'
+    | '/customer/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -229,12 +299,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/app/branches'
+    | '/app/cash-drawer'
     | '/app/dashboard'
     | '/app/financials'
     | '/app/inventory'
     | '/app/loyalty'
     | '/app/notifications'
     | '/app/patients'
+    | '/app/performance'
     | '/app/pos'
     | '/app/prescriptions'
     | '/app/reports'
@@ -242,7 +314,12 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/staff'
     | '/app/super-admin'
+    | '/app/suppliers'
     | '/customer/dashboard'
+    | '/customer/loyalty'
+    | '/customer/orders'
+    | '/customer/prescriptions'
+    | '/customer/profile'
   id:
     | '__root__'
     | '/'
@@ -251,12 +328,14 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/app/branches'
+    | '/app/cash-drawer'
     | '/app/dashboard'
     | '/app/financials'
     | '/app/inventory'
     | '/app/loyalty'
     | '/app/notifications'
     | '/app/patients'
+    | '/app/performance'
     | '/app/pos'
     | '/app/prescriptions'
     | '/app/reports'
@@ -264,7 +343,12 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/app/staff'
     | '/app/super-admin'
+    | '/app/suppliers'
     | '/customer/dashboard'
+    | '/customer/loyalty'
+    | '/customer/orders'
+    | '/customer/prescriptions'
+    | '/customer/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -312,12 +396,47 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/customer/profile': {
+      id: '/customer/profile'
+      path: '/profile'
+      fullPath: '/customer/profile'
+      preLoaderRoute: typeof CustomerProfileRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/prescriptions': {
+      id: '/customer/prescriptions'
+      path: '/prescriptions'
+      fullPath: '/customer/prescriptions'
+      preLoaderRoute: typeof CustomerPrescriptionsRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/orders': {
+      id: '/customer/orders'
+      path: '/orders'
+      fullPath: '/customer/orders'
+      preLoaderRoute: typeof CustomerOrdersRouteImport
+      parentRoute: typeof CustomerRoute
+    }
+    '/customer/loyalty': {
+      id: '/customer/loyalty'
+      path: '/loyalty'
+      fullPath: '/customer/loyalty'
+      preLoaderRoute: typeof CustomerLoyaltyRouteImport
+      parentRoute: typeof CustomerRoute
+    }
     '/customer/dashboard': {
       id: '/customer/dashboard'
       path: '/dashboard'
       fullPath: '/customer/dashboard'
       preLoaderRoute: typeof CustomerDashboardRouteImport
       parentRoute: typeof CustomerRoute
+    }
+    '/app/suppliers': {
+      id: '/app/suppliers'
+      path: '/suppliers'
+      fullPath: '/app/suppliers'
+      preLoaderRoute: typeof AppSuppliersRouteImport
+      parentRoute: typeof AppRoute
     }
     '/app/super-admin': {
       id: '/app/super-admin'
@@ -368,6 +487,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/performance': {
+      id: '/app/performance'
+      path: '/performance'
+      fullPath: '/app/performance'
+      preLoaderRoute: typeof AppPerformanceRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/patients': {
       id: '/app/patients'
       path: '/patients'
@@ -410,6 +536,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppDashboardRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/cash-drawer': {
+      id: '/app/cash-drawer'
+      path: '/cash-drawer'
+      fullPath: '/app/cash-drawer'
+      preLoaderRoute: typeof AppCashDrawerRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/branches': {
       id: '/app/branches'
       path: '/branches'
@@ -422,12 +555,14 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppBranchesRoute: typeof AppBranchesRoute
+  AppCashDrawerRoute: typeof AppCashDrawerRoute
   AppDashboardRoute: typeof AppDashboardRoute
   AppFinancialsRoute: typeof AppFinancialsRoute
   AppInventoryRoute: typeof AppInventoryRoute
   AppLoyaltyRoute: typeof AppLoyaltyRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppPatientsRoute: typeof AppPatientsRoute
+  AppPerformanceRoute: typeof AppPerformanceRoute
   AppPosRoute: typeof AppPosRoute
   AppPrescriptionsRoute: typeof AppPrescriptionsRoute
   AppReportsRoute: typeof AppReportsRoute
@@ -435,16 +570,19 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppStaffRoute: typeof AppStaffRoute
   AppSuperAdminRoute: typeof AppSuperAdminRoute
+  AppSuppliersRoute: typeof AppSuppliersRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppBranchesRoute: AppBranchesRoute,
+  AppCashDrawerRoute: AppCashDrawerRoute,
   AppDashboardRoute: AppDashboardRoute,
   AppFinancialsRoute: AppFinancialsRoute,
   AppInventoryRoute: AppInventoryRoute,
   AppLoyaltyRoute: AppLoyaltyRoute,
   AppNotificationsRoute: AppNotificationsRoute,
   AppPatientsRoute: AppPatientsRoute,
+  AppPerformanceRoute: AppPerformanceRoute,
   AppPosRoute: AppPosRoute,
   AppPrescriptionsRoute: AppPrescriptionsRoute,
   AppReportsRoute: AppReportsRoute,
@@ -452,16 +590,25 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppStaffRoute: AppStaffRoute,
   AppSuperAdminRoute: AppSuperAdminRoute,
+  AppSuppliersRoute: AppSuppliersRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface CustomerRouteChildren {
   CustomerDashboardRoute: typeof CustomerDashboardRoute
+  CustomerLoyaltyRoute: typeof CustomerLoyaltyRoute
+  CustomerOrdersRoute: typeof CustomerOrdersRoute
+  CustomerPrescriptionsRoute: typeof CustomerPrescriptionsRoute
+  CustomerProfileRoute: typeof CustomerProfileRoute
 }
 
 const CustomerRouteChildren: CustomerRouteChildren = {
   CustomerDashboardRoute: CustomerDashboardRoute,
+  CustomerLoyaltyRoute: CustomerLoyaltyRoute,
+  CustomerOrdersRoute: CustomerOrdersRoute,
+  CustomerPrescriptionsRoute: CustomerPrescriptionsRoute,
+  CustomerProfileRoute: CustomerProfileRoute,
 }
 
 const CustomerRouteWithChildren = CustomerRoute._addFileChildren(
@@ -478,3 +625,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
