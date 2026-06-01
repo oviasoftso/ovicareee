@@ -103,6 +103,21 @@ function LoginPage() {
             <Link to="/" className="text-muted-foreground hover:text-foreground">← Back home</Link>
           </div>
 
+          <div className="mt-8 lg:hidden">
+            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">Quick Demo Access</div>
+            <div className="grid grid-cols-2 gap-2">
+              {DEMO.map((d) => (
+                <button key={d.email} type="button" onClick={() => { setEmail(d.email); setPassword(d.password); }}
+                  className="text-left rounded-lg bg-muted/50 hover:bg-muted border px-3 py-2 transition">
+                  <div className="font-medium text-sm">{d.label}</div>
+                  <div className="text-muted-foreground text-xs truncate">{d.email}</div>
+                  <div className="text-muted-foreground text-[10px] font-mono">{d.password}</div>
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] text-center text-muted-foreground">Tap a role to autofill credentials</p>
+          </div>
+
           <p className="mt-12 text-xs text-center text-muted-foreground">OviCare v1.0 · Powered by Ovia Software Solutions</p>
         </div>
       </div>
