@@ -5,6 +5,8 @@ import { PageShell, PageHeader, StatCard } from "@/components/PageShell";
 import { DollarSign, ShoppingCart, AlertTriangle, Clock } from "lucide-react";
 import { fmtMoney, fmtNumber, fmtDateTime } from "@/lib/format";
 import { useAuth, roleLabel } from "@/lib/auth";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Glass } from "@/components/ui/glass";
 import {
   AreaChart,
   Area,
@@ -22,7 +24,7 @@ export const Route = createFileRoute("/app/dashboard")({ component: Dashboard })
 function Dashboard() {
   const { profile, primaryRole } = useAuth();
 
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: async () => {
       const today = new Date();
@@ -60,7 +62,7 @@ function Dashboard() {
     },
   });
 
-  const { data: topProducts } = useQuery({
+  const { data: topProducts, isLoading: topProductsLoading } = useQuery({
     queryKey: ["top-products"],
     queryFn: async () => {
       const { data } = await supabase
@@ -80,7 +82,7 @@ function Dashboard() {
     },
   });
 
-  const { data: recent } = useQuery({
+  const { data: recent, isLoading: recentLoading } = useQuery({
     queryKey: ["recent-sales"],
     queryFn: async () => {
       const { data } = await supabase
@@ -99,115 +101,148 @@ function Dashboard() {
         subtitle={`${roleLabel(primaryRole)} dashboard · Health Haven network`}
       />
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <StatCard
-          label="Today's Revenue"
-          value={fmtMoney(stats?.todayRev ?? 0)}
-          hint="All branches"
-          icon={DollarSign}
-          tone="primary"
-        />
-        <StatCard
-          label="Today's Sales"
-          value={fmtNumber(stats?.todayCount ?? 0)}
-          hint="Transactions"
-          icon={ShoppingCart}
-          tone="violet"
-        />
-        <StatCard
-          label="Low Stock"
-          value={fmtNumber(stats?.lowStock ?? 0)}
-          hint="Items below reorder"
-          icon={AlertTriangle}
-          tone="amber"
-        />
-        <StatCard
-          label="Expiring Soon"
-          value={fmtNumber(stats?.expiring ?? 0)}
-          hint="Within 7 days"
-          icon={Clock}
-          tone="danger"
-        />
+        {statsLoading ? (
+          <>
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-14 w-full mt-2" />
+            <Skeleton className="h-14 w-full mt-2" />
+            <Skeleton className="h-14 w-full mt-2" />
+          </>
+        ) : (
+          <>
+            <StatCard
+              label="Today's Revenue"
+              value={fmtMoney(stats?.todayRev ?? 0)}
+              hint="All branches"
+              icon={DollarSign}
+              tone="primary"
+            />
+            <StatCard
+              label="Today's Sales"
+              value={fmtNumber(stats?.todayCount ?? 0)}
+              hint="Transactions"
+              icon={ShoppingCart}
+              tone="violet"
+            />
+            <StatCard
+              label="Low Stock"
+              value={fmtNumber(stats?.lowStock ?? 0)}
+              hint="Items below reorder"
+              icon={AlertTriangle}
+              tone="amber"
+            />
+            <StatCard
+              label="Expiring Soon"
+              value={fmtNumber(stats?.expiring ?? 0)}
+              hint="Within 7 days"
+              icon={Clock}
+              tone="destructive"
+            />
+          </>
+        )}
       </div>
 
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2 rounded-2xl bg-card border p-6 shadow-card">
-          <h3 className="font-display font-semibold text-lg">Revenue — last 30 days</h3>
-          <div className="h-72 mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={stats?.chart ?? []}>
-                <defs>
-                  <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="oklch(0.62 0.12 180)" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="oklch(0.62 0.12 180)" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.92 0.01 220)" />
-                <XAxis dataKey="date" stroke="oklch(0.5 0.02 250)" fontSize={11} />
-                <YAxis stroke="oklch(0.5 0.02 250)" fontSize={11} />
-                <Tooltip
-                  contentStyle={{ borderRadius: 12, border: "1px solid oklch(0.92 0.01 220)" }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="oklch(0.47 0.09 180)"
-                  strokeWidth={2.5}
-                  fill="url(#g)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+        {/* Revenue Chart */}
+        <Glass className="lg:col-span-2 p-6">
+          <h3 className="font-display font-semibold text-lg mb-4">Revenue — last 30 days</h3>
+          <div className="h-72">
+            {statsLoading ? (
+              <Skeleton className="h-full w-full animate-pulse rounded-lg" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={stats?.chart ?? []}>
+                  <defs>
+                    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="oklch(0.62 0.12 180)" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="oklch(0.62 0.12 180)" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area
+                    type="monotone"
+                    dataKey="revenue"
+                    stroke="oklch(0.62 0.12 180)"
+                    fill="url(#g)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
-        </div>
+        </Glass>
 
-        <div className="rounded-2xl bg-card border p-6 shadow-card">
-          <h3 className="font-display font-semibold text-lg">Top sellers</h3>
-          <div className="h-72 mt-4">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={topProducts ?? []} layout="vertical">
-                <XAxis type="number" hide />
-                <YAxis
-                  type="category"
+        {/* Top Products Bar Chart */}
+        <Glass className="lg:col-span-1 p-6">
+          <h3 className="font-display font-semibold text-lg mb-4">Top Products</h3>
+          <div className="h-72">
+            {topProductsLoading ? (
+              <Skeleton className="h-full w-full animate-pulse rounded-lg" />
+            ) : (
+              <BarChart
+                data={topProducts ?? []}
+                margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
                   dataKey="name"
-                  width={90}
-                  fontSize={11}
-                  stroke="oklch(0.5 0.02 250)"
+                  tick={({ index, ...rest }) => (
+                    <text
+                      x={0}
+                      y={-10}
+                      dy={0}
+                      transform={`rotate(-30 ${x} ${y})`}
+                      textAnchor="end"
+                      style={{ fontSize: 12 }}
+                    >
+                      {rest.name}
+                    </text>
+                  )}
                 />
-                <Bar dataKey="value" fill="oklch(0.47 0.09 180)" radius={[0, 6, 6, 0]} />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="value" fill="oklch(0.62 0.12 180)" />
               </BarChart>
-            </ResponsiveContainer>
+            )}
           </div>
-        </div>
-      </div>
+        </Glass>
 
-      <div className="rounded-2xl bg-card border shadow-card overflow-hidden">
-        <div className="px-6 py-4 border-b flex items-center justify-between">
-          <h3 className="font-display font-semibold text-lg">Recent transactions</h3>
-        </div>
-        <table className="w-full text-sm">
-          <thead className="bg-muted/50 text-muted-foreground">
-            <tr>
-              <th className="text-left px-6 py-3 font-medium">Receipt</th>
-              <th className="text-left px-6 py-3 font-medium">Payment</th>
-              <th className="text-right px-6 py-3 font-medium">Amount</th>
-              <th className="text-right px-6 py-3 font-medium">Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {(recent ?? []).map((r: any) => (
-              <tr key={r.receipt_number} className="border-t hover:bg-muted/30">
-                <td className="px-6 py-3 font-mono text-xs">{r.receipt_number}</td>
-                <td className="px-6 py-3 capitalize">{r.payment_method.replace("_", " ")}</td>
-                <td className="px-6 py-3 text-right text-mono font-semibold">
-                  {fmtMoney(r.total_amount)}
-                </td>
-                <td className="px-6 py-3 text-right text-muted-foreground text-xs">
-                  {fmtDateTime(r.sale_date)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        {/* Recent Sales */}
+        <Glass className="lg:col-span-1 p-6">
+          <h3 className="font-display font-semibold text-lg mb-4">Recent Sales</h3>
+          <div className="space-y-4 h-72 overflow-y-auto">
+            {recentLoading ? (
+              <>
+                <Skeleton className="h-10 w-full animate-pulse rounded" />
+                <Skeleton className="h-10 w-full animate-pulse rounded-lg" />
+                <Skeleton className="h-10 w-full animate-pulse rounded-lg" />
+                <Skeleton className="h-10 w-full animate-pulse rounded-lg" />
+              </>
+            ) : (
+              recent.map((sale) => (
+                <div
+                  key={sale.id}
+                  className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5"
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{sale.receipt_number ?? "N/A"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {sale.payment_method ?? "-"} • {fmtDateTime(new Date(sale.sale_date))}
+                    </p>
+                  </div>
+                  <div className="text-right text-sm font-semibold">
+                    {fmtMoney(sale.total_amount ?? 0)}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </Glass>
       </div>
     </PageShell>
   );
