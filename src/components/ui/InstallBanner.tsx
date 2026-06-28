@@ -6,6 +6,7 @@ export function InstallBanner() {
 
   useEffect(() => {
     const handleBeforeInstall = (e: Event) => {
+      console.log("[InstallBanner] beforeinstallprompt fired");
       // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
       // Stash the event so it can be triggered later.
@@ -16,6 +17,7 @@ export function InstallBanner() {
     };
 
     const handleAppInstalled = () => {
+      console.log("[InstallBanner] appinstalled fired");
       // Clear the deferred prompt so it can be garbage collected
       deferredPromptRef.current = null;
       // Optionally, hide the install button/install banner
@@ -27,8 +29,19 @@ export function InstallBanner() {
 
     // Also hide if the app is already installed (display mode standalone)
     if (window.matchMedia("(display-mode: standalone)").matches) {
+      console.log("[InstallBanner] App is already installed (standalone)");
       setShowBanner(false);
       deferredPromptRef.current = null;
+    }
+
+    // Check if we missed the beforeinstallprompt event (e.g., listener added after event)
+    // Some browsers may store it on window.deferredPrompt (non-standard)
+    // @ts-ignore
+    const existing = window.deferredPrompt;
+    if (existing && !deferredPromptRef.current) {
+      console.log("[InstallBanner] Found deferredPrompt on window");
+      deferredPromptRef.current = existing as PromptEventObject;
+      setShowBanner(true);
     }
 
     return () => {
@@ -38,6 +51,7 @@ export function InstallBanner() {
   }, []);
 
   const handleInstall = async () => {
+    console.log("[InstallBanner] Install button clicked");
     // Hide the app install banner, it will no longer be updated
     setShowBanner(false);
     // Show the prompt
@@ -59,6 +73,7 @@ export function InstallBanner() {
   };
 
   const handleDismiss = () => {
+    console.log("[InstallBanner] Dismiss button clicked");
     setShowBanner(false);
     // Optionally, you can clear the deferred prompt so it doesn't stay in memory
     // but you might want to keep it if the user just dismissed temporarily.

@@ -123,8 +123,8 @@ function RootComponent() {
       <AuthProvider>
         <Outlet />
         <Toaster position="top-right" richColors />
-        <InstallBanner />
         <RegisterSW />
+        <InstallBanner />
       </AuthProvider>
     </QueryClientProvider>
   );
