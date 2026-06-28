@@ -40,6 +40,55 @@ export default defineConfig({
           },
         ],
       },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+        runtimeCaching: [
+          {
+            urlPattern: ({url}) => url.origin === self.location.origin && url.pathname.startsWith('/api'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24, // 1 day
+              },
+              cacheableResponse: {statuses: [0, 200]},
+            },
+          },
+          {
+            urlPattern: ({url}) => url.href.startsWith('https://supabase.com') || url.href.startsWith('https://*.supabase.co'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'supabase-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24,
+              },
+              cacheableResponse: {statuses: [0, 200]},
+            },
+          },
+          {
+            urlPattern: ({url}) => url.href.startsWith('https://fonts.googleapis.com') || url.href.startsWith('https://fonts.gstatic.com'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+              cacheableResponse: {statuses: [0, 200]},
+            },
+          },
+        ],
+        navigateFallback: '/',
+        navigateFallbackDenylist: [
+          new RegExp('^/_'),
+          new RegExp('^/api/'),
+        ],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+      },
     }),
     tailwindcss(),
     react(),
