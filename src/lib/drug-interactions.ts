@@ -36,10 +36,15 @@ export async function checkInteractions(drugNames: string[]): Promise<DrugIntera
 
 export function severityColor(severity: string): string {
   switch (severity) {
-    case "mild": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    case "moderate": return "bg-orange-100 text-orange-800 border-orange-200";
-    case "severe": return "bg-red-100 text-red-800 border-red-200";
-    case "contraindicated": return "bg-red-200 text-red-900 border-red-300";
-    default: return "bg-gray-100 text-gray-800";
+    case "mild":
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+    case "moderate":
+      return "bg-orange-100 text-orange-800 border-orange-200";
+    case "severe":
+      return "bg-red-100 text-red-800 border-red-200";
+    case "contraindicated":
+      return "bg-red-200 text-red-900 border-red-300";
+    default:
+      return "bg-gray-100 text-gray-800";
   }
 }

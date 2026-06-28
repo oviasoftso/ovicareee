@@ -7,7 +7,14 @@ import { fmtNumber } from "@/lib/format";
 
 export const Route = createFileRoute("/app/loyalty")({ component: LoyaltyPage });
 
-const tier = (pts: number) => pts >= 1000 ? { name: "Platinum", color: "from-violet to-secondary" } : pts >= 500 ? { name: "Gold", color: "from-amber to-amber" } : pts >= 100 ? { name: "Silver", color: "from-primary to-primary-light" } : { name: "Bronze", color: "from-muted to-muted" };
+const tier = (pts: number) =>
+  pts >= 1000
+    ? { name: "Platinum", color: "from-violet to-secondary" }
+    : pts >= 500
+      ? { name: "Gold", color: "from-amber to-amber" }
+      : pts >= 100
+        ? { name: "Silver", color: "from-primary to-primary-light" }
+        : { name: "Bronze", color: "from-muted to-muted" };
 
 function LoyaltyPage() {
   const { data, isLoading } = useQuery({
@@ -23,22 +30,40 @@ function LoyaltyPage() {
     },
   });
 
-  if (isLoading || !data) return <PageShell><div className="flex justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div></PageShell>;
+  if (isLoading || !data)
+    return (
+      <PageShell>
+        <div className="flex justify-center py-20">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </div>
+      </PageShell>
+    );
 
   const platinum = data.patients.filter((p: any) => p.loyalty_points >= 1000).length;
-  const gold = data.patients.filter((p: any) => p.loyalty_points >= 500 && p.loyalty_points < 1000).length;
+  const gold = data.patients.filter(
+    (p: any) => p.loyalty_points >= 500 && p.loyalty_points < 1000,
+  ).length;
 
   return (
     <PageShell>
       <PageHeader title="Loyalty" subtitle="Customer tier program and points balance." />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <StatCard label="Points outstanding" value={fmtNumber(data.total)} icon={Star} tone="amber" />
+        <StatCard
+          label="Points outstanding"
+          value={fmtNumber(data.total)}
+          icon={Star}
+          tone="amber"
+        />
         <StatCard label="Platinum members" value={platinum} icon={Crown} tone="violet" />
         <StatCard label="Gold members" value={gold} icon={Award} tone="primary" />
       </div>
 
       {data.patients.length === 0 ? (
-        <EmptyState title="No loyalty members yet" message="Customers earn points automatically at POS checkout." icon={Award} />
+        <EmptyState
+          title="No loyalty members yet"
+          message="Customers earn points automatically at POS checkout."
+          icon={Award}
+        />
       ) : (
         <div className="rounded-2xl bg-card border shadow-card overflow-hidden">
           <table className="w-full text-sm">
@@ -58,11 +83,15 @@ function LoyaltyPage() {
                     <td className="px-6 py-3 font-medium">{p.full_name}</td>
                     <td className="px-6 py-3 text-mono text-muted-foreground">{p.patient_code}</td>
                     <td className="px-6 py-3">
-                      <span className={`inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r ${t.color} text-white px-3 py-1 text-xs font-semibold`}>
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r ${t.color} text-white px-3 py-1 text-xs font-semibold`}
+                      >
                         <Star className="h-3 w-3" /> {t.name}
                       </span>
                     </td>
-                    <td className="px-6 py-3 text-right font-mono font-semibold">{fmtNumber(p.loyalty_points)}</td>
+                    <td className="px-6 py-3 text-right font-mono font-semibold">
+                      {fmtNumber(p.loyalty_points)}
+                    </td>
                   </tr>
                 );
               })}

@@ -19,20 +19,36 @@ function CustomerLayout() {
   const { user, loading, signOut } = useAuth();
   const nav = useNavigate();
   const path = useRouterState({ select: (s) => s.location.pathname });
-  useEffect(() => { if (!loading && !user) nav({ to: "/login" }); }, [user, loading, nav]);
-  if (loading || !user) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
+  useEffect(() => {
+    if (!loading && !user) nav({ to: "/login" });
+  }, [user, loading, nav]);
+  if (loading || !user)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
   return (
     <div className="min-h-screen bg-surface">
       <header className="bg-card border-b">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Logo />
-          <button onClick={signOut} className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2"><LogOut className="h-4 w-4" /> Sign out</button>
+          <button
+            onClick={signOut}
+            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" /> Sign out
+          </button>
         </div>
         <nav className="max-w-6xl mx-auto px-6 flex gap-1 overflow-x-auto">
           {NAV.map((n) => {
             const active = path === n.to;
             return (
-              <Link key={n.to} to={n.to} className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition ${active ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}>
+              <Link
+                key={n.to}
+                to={n.to}
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition ${active ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
+              >
                 <n.icon className="h-4 w-4" /> {n.label}
               </Link>
             );

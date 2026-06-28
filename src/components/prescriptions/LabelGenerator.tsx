@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Printer, Copy, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -41,16 +47,19 @@ export function LabelGenerator({ open, onOpenChange, prescription, items }: Prop
     };
   });
 
-  const labelText = labels.map((l) =>
-    `${"=".repeat(40)}\n` +
-    `  ${l.drug}\n` +
-    `  Patient: ${l.patient}\n` +
-    `  Rx: ${l.rx}\n` +
-    `  ${l.instructions}\n` +
-    `  ${l.quantity}\n` +
-    l.warnings.map((w) => `  ⚠ ${w}`).join("\n") +
-    `\n${"=".repeat(40)}`
-  ).join("\n\n");
+  const labelText = labels
+    .map(
+      (l) =>
+        `${"=".repeat(40)}\n` +
+        `  ${l.drug}\n` +
+        `  Patient: ${l.patient}\n` +
+        `  Rx: ${l.rx}\n` +
+        `  ${l.instructions}\n` +
+        `  ${l.quantity}\n` +
+        l.warnings.map((w) => `  ⚠ ${w}`).join("\n") +
+        `\n${"=".repeat(40)}`,
+    )
+    .join("\n\n");
 
   const handleCopy = () => {
     navigator.clipboard.writeText(labelText);
@@ -72,7 +81,9 @@ export function LabelGenerator({ open, onOpenChange, prescription, items }: Prop
           .warning { color: #c00; font-weight: bold; margin-top: 8px; font-size: 12px; }
           @media print { body { padding: 0; } }
         </style></head><body>
-        ${labels.map((l) => `
+        ${labels
+          .map(
+            (l) => `
           <div class="label">
             <div class="drug">${l.drug}</div>
             <div class="field"><strong>Patient:</strong> ${l.patient}</div>
@@ -81,7 +92,9 @@ export function LabelGenerator({ open, onOpenChange, prescription, items }: Prop
             <div class="field"><strong>${l.quantity}</div>
             ${l.warnings.map((w) => `<div class="warning">⚠ ${w}</div>`).join("")}
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
         </body></html>
       `);
       printWindow.document.close();
@@ -104,7 +117,9 @@ export function LabelGenerator({ open, onOpenChange, prescription, items }: Prop
               <div className="mt-1">{l.instructions}</div>
               <div>{l.quantity}</div>
               {l.warnings.map((w, j) => (
-                <div key={j} className="text-destructive font-bold text-xs mt-1">⚠ {w}</div>
+                <div key={j} className="text-destructive font-bold text-xs mt-1">
+                  ⚠ {w}
+                </div>
               ))}
             </div>
           ))}

@@ -19,7 +19,9 @@ function Suppliers() {
   const { data: orders } = useQuery({
     queryKey: ["purchase-orders"],
     queryFn: async () => {
-      const { data } = await supabase.from("purchase_orders").select("supplier_id, status, total_amount, ordered_at, received_at");
+      const { data } = await supabase
+        .from("purchase_orders")
+        .select("supplier_id, status, total_amount, ordered_at, received_at");
       return data ?? [];
     },
   });
@@ -29,21 +31,44 @@ function Suppliers() {
     const totalOrders = sOrders.length;
     const totalValue = sOrders.reduce((a: number, o: any) => a + Number(o.total_amount), 0);
     const received = sOrders.filter((o: any) => o.status === "received");
-    const onTime = received.filter((o: any) => o.received_at && o.ordered_at && new Date(o.received_at) <= new Date(new Date(o.ordered_at).getTime() + 7 * 86400000));
+    const onTime = received.filter(
+      (o: any) =>
+        o.received_at &&
+        o.ordered_at &&
+        new Date(o.received_at) <= new Date(new Date(o.ordered_at).getTime() + 7 * 86400000),
+    );
     const fillRate = received.length > 0 ? Math.round((onTime.length / received.length) * 100) : 0;
     return { ...s, totalOrders, totalValue, fillRate };
   });
 
   const activeSuppliers = (suppliers ?? []).filter((s: any) => s.is_active).length;
-  const avgRating = suppliers?.length ? ((suppliers as any[]).reduce((a: number, s: any) => a + (s.rating ?? 0), 0) / suppliers.length).toFixed(1) : "0";
+  const avgRating = suppliers?.length
+    ? (
+        (suppliers as any[]).reduce((a: number, s: any) => a + (s.rating ?? 0), 0) /
+        suppliers.length
+      ).toFixed(1)
+    : "0";
 
   return (
     <PageShell>
-      <PageHeader title="Supplier Performance" subtitle="Track vendor delivery speeds, pricing, and fill rates" />
+      <PageHeader
+        title="Supplier Performance"
+        subtitle="Track vendor delivery speeds, pricing, and fill rates"
+      />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
-        <StatCard label="Active Suppliers" value={String(activeSuppliers)} icon={Truck} tone="primary" />
+        <StatCard
+          label="Active Suppliers"
+          value={String(activeSuppliers)}
+          icon={Truck}
+          tone="primary"
+        />
         <StatCard label="Avg Rating" value={avgRating} icon={Star} tone="amber" />
-        <StatCard label="Total POs" value={String(orders?.length ?? 0)} icon={Package} tone="violet" />
+        <StatCard
+          label="Total POs"
+          value={String(orders?.length ?? 0)}
+          icon={Package}
+          tone="violet"
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -54,19 +79,39 @@ function Suppliers() {
                 <h3 className="font-display font-semibold">{s.name}</h3>
                 <p className="text-sm text-muted-foreground">{s.contact_person ?? "—"}</p>
               </div>
-              <Badge variant={s.is_active ? "default" : "secondary"}>{s.is_active ? "Active" : "Inactive"}</Badge>
+              <Badge variant={s.is_active ? "default" : "secondary"}>
+                {s.is_active ? "Active" : "Inactive"}
+              </Badge>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div><span className="text-muted-foreground">Orders:</span><div className="font-medium text-mono">{s.totalOrders}</div></div>
-              <div><span className="text-muted-foreground">Value:</span><div className="font-medium text-mono">${s.totalValue.toFixed(0)}</div></div>
-              <div><span className="text-muted-foreground">Rating:</span><div className="font-medium">{s.rating ?? 0}/5 <Star className="h-3 w-3 inline text-amber" /></div></div>
-              <div><span className="text-muted-foreground">On-time:</span><div className="font-medium">{s.fillRate}%</div></div>
+              <div>
+                <span className="text-muted-foreground">Orders:</span>
+                <div className="font-medium text-mono">{s.totalOrders}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Value:</span>
+                <div className="font-medium text-mono">${s.totalValue.toFixed(0)}</div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">Rating:</span>
+                <div className="font-medium">
+                  {s.rating ?? 0}/5 <Star className="h-3 w-3 inline text-amber" />
+                </div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">On-time:</span>
+                <div className="font-medium">{s.fillRate}%</div>
+              </div>
             </div>
-            <div className="mt-3 text-xs text-muted-foreground">{s.email ?? ""} {s.phone ? `· ${s.phone}` : ""}</div>
+            <div className="mt-3 text-xs text-muted-foreground">
+              {s.email ?? ""} {s.phone ? `· ${s.phone}` : ""}
+            </div>
           </div>
         ))}
         {supplierStats.length === 0 && (
-          <div className="col-span-full text-center py-12 text-muted-foreground">No suppliers found.</div>
+          <div className="col-span-full text-center py-12 text-muted-foreground">
+            No suppliers found.
+          </div>
         )}
       </div>
     </PageShell>

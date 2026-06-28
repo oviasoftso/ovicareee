@@ -33,7 +33,8 @@ function CustomerOrders() {
     queryKey: ["customer-orders", patientId],
     queryFn: async () => {
       if (!patientId) return [];
-      const { data } = await supabase.from("sales")
+      const { data } = await supabase
+        .from("sales")
         .select("*, sale_items(product_name, quantity, unit_price, total_price)")
         .eq("patient_id", patientId)
         .order("sale_date", { ascending: false });
@@ -45,7 +46,7 @@ function CustomerOrders() {
   return (
     <div className="max-w-6xl mx-auto p-6 md:p-10">
       <PageHeader title="My Orders" subtitle="Your purchase history" />
-      {(!orders || orders.length === 0) ? (
+      {!orders || orders.length === 0 ? (
         <div className="rounded-2xl bg-card border p-12 shadow-card text-center">
           <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
           <h3 className="font-display font-semibold text-lg">No orders yet</h3>
@@ -57,20 +58,30 @@ function CustomerOrders() {
             <div key={order.id} className="rounded-xl bg-card border shadow-card overflow-hidden">
               <div className="px-6 py-4 flex items-center justify-between border-b">
                 <div>
-                  <div className="font-mono text-sm text-muted-foreground">{order.receipt_number}</div>
-                  <div className="text-sm text-muted-foreground">{fmtDateTime(order.sale_date)}</div>
+                  <div className="font-mono text-sm text-muted-foreground">
+                    {order.receipt_number}
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {fmtDateTime(order.sale_date)}
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <Badge className={STATUS_COLORS[order.status] ?? ""}>{order.status}</Badge>
-                  <span className="font-display font-bold text-lg">{fmtMoney(order.total_amount)}</span>
+                  <span className="font-display font-bold text-lg">
+                    {fmtMoney(order.total_amount)}
+                  </span>
                 </div>
               </div>
               <div className="px-6 py-3">
-                <div className="text-xs text-muted-foreground mb-2">Payment: {order.payment_method?.replace("_", " ")}</div>
+                <div className="text-xs text-muted-foreground mb-2">
+                  Payment: {order.payment_method?.replace("_", " ")}
+                </div>
                 <div className="space-y-1">
                   {(order.sale_items ?? []).map((item: any, i: number) => (
                     <div key={i} className="flex items-center justify-between text-sm py-1">
-                      <span>{item.product_name} x{item.quantity}</span>
+                      <span>
+                        {item.product_name} x{item.quantity}
+                      </span>
                       <span className="text-mono">{fmtMoney(item.total_price)}</span>
                     </div>
                   ))}

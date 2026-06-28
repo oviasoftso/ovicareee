@@ -12,11 +12,15 @@ function Performance() {
   const { data: staff } = useQuery({
     queryKey: ["performance-staff"],
     queryFn: async () => {
-      const { data: profiles } = await supabase.from("profiles").select("id, full_name, branch_id, is_active");
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, branch_id, is_active");
       const { data: roles } = await supabase.from("user_roles").select("user_id, role");
       const { data: branches } = await supabase.from("branches").select("id, name");
 
-      const staffIds = (roles ?? []).filter((r: any) => r.role !== "customer").map((r: any) => r.user_id);
+      const staffIds = (roles ?? [])
+        .filter((r: any) => r.role !== "customer")
+        .map((r: any) => r.user_id);
       const staffProfiles = (profiles ?? []).filter((p: any) => staffIds.includes(p.id));
       const branchMap = new Map((branches ?? []).map((b: any) => [b.id, b.name]));
       const roleMap = new Map<string, string[]>();
@@ -36,7 +40,10 @@ function Performance() {
   const { data: salesByStaff } = useQuery({
     queryKey: ["performance-sales"],
     queryFn: async () => {
-      const { data } = await supabase.from("sales").select("cashier_id, total_amount, sale_date").gte("sale_date", new Date(Date.now() - 30 * 86400000).toISOString());
+      const { data } = await supabase
+        .from("sales")
+        .select("cashier_id, total_amount, sale_date")
+        .gte("sale_date", new Date(Date.now() - 30 * 86400000).toISOString());
       const grouped: Record<string, { count: number; total: number }> = {};
       (data ?? []).forEach((s: any) => {
         if (!grouped[s.cashier_id]) grouped[s.cashier_id] = { count: 0, total: 0 };
@@ -50,7 +57,10 @@ function Performance() {
   const { data: rxByStaff } = useQuery({
     queryKey: ["performance-rx"],
     queryFn: async () => {
-      const { data } = await supabase.from("prescriptions").select("dispensed_by, status").not("dispensed_by", "is", null);
+      const { data } = await supabase
+        .from("prescriptions")
+        .select("dispensed_by, status")
+        .not("dispensed_by", "is", null);
       const grouped: Record<string, { total: number; completed: number }> = {};
       (data ?? []).forEach((r: any) => {
         if (!grouped[r.dispensed_by]) grouped[r.dispensed_by] = { total: 0, completed: 0 };
@@ -66,12 +76,25 @@ function Performance() {
 
   return (
     <PageShell>
-      <PageHeader title="Staff Performance" subtitle="Sales and prescription metrics per team member" />
+      <PageHeader
+        title="Staff Performance"
+        subtitle="Sales and prescription metrics per team member"
+      />
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-5 mb-6">
-        <StatCard label="Team Size" value={fmtNumber(staff?.length ?? 0)} icon={Users} tone="primary" />
+        <StatCard
+          label="Team Size"
+          value={fmtNumber(staff?.length ?? 0)}
+          icon={Users}
+          tone="primary"
+        />
         <StatCard label="30d Sales" value={fmtMoney(totalSales)} icon={DollarSign} tone="success" />
         <StatCard label="30d Rx" value={fmtNumber(totalRx)} icon={FileText} tone="violet" />
-        <StatCard label="Avg per Staff" value={fmtMoney(staff?.length ? totalSales / staff.length : 0)} icon={TrendingUp} tone="amber" />
+        <StatCard
+          label="Avg per Staff"
+          value={fmtMoney(staff?.length ? totalSales / staff.length : 0)}
+          icon={TrendingUp}
+          tone="amber"
+        />
       </div>
 
       <div className="rounded-2xl bg-card border shadow-card overflow-hidden">
@@ -96,15 +119,29 @@ function Performance() {
                   <td className="px-6 py-3 font-medium">{s.full_name}</td>
                   <td className="px-6 py-3">
                     <div className="flex flex-wrap gap-1">
-                      {s.roles.map((r: string) => <Badge key={r} variant="outline" className="text-[10px] capitalize">{r.replace("_", " ")}</Badge>)}
+                      {s.roles.map((r: string) => (
+                        <Badge key={r} variant="outline" className="text-[10px] capitalize">
+                          {r.replace("_", " ")}
+                        </Badge>
+                      ))}
                     </div>
                   </td>
                   <td className="px-6 py-3 text-muted-foreground">{s.branchName}</td>
                   <td className="px-6 py-3 text-right text-mono">{sales.count}</td>
-                  <td className="px-6 py-3 text-right text-mono font-semibold">{fmtMoney(sales.total)}</td>
-                  <td className="px-6 py-3 text-right text-mono">{rx.completed}/{rx.total}</td>
+                  <td className="px-6 py-3 text-right text-mono font-semibold">
+                    {fmtMoney(sales.total)}
+                  </td>
+                  <td className="px-6 py-3 text-right text-mono">
+                    {rx.completed}/{rx.total}
+                  </td>
                   <td className="px-6 py-3 text-center">
-                    <Badge className={s.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>{s.is_active ? "Active" : "Disabled"}</Badge>
+                    <Badge
+                      className={
+                        s.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"
+                      }
+                    >
+                      {s.is_active ? "Active" : "Disabled"}
+                    </Badge>
                   </td>
                 </tr>
               );

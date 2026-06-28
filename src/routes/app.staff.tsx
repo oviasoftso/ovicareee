@@ -12,7 +12,9 @@ function StaffPage() {
     queryKey: ["staff"],
     queryFn: async () => {
       const [{ data: profiles }, { data: roles }, { data: branches }] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, phone, branch_id, is_active, last_login, created_at"),
+        supabase
+          .from("profiles")
+          .select("id, full_name, phone, branch_id, is_active, last_login, created_at"),
         supabase.from("user_roles").select("user_id, role"),
         supabase.from("branches").select("id, name"),
       ]);
@@ -23,19 +25,30 @@ function StaffPage() {
         rolesByUser.set(r.user_id, arr);
       });
       const branchById = new Map((branches ?? []).map((b: any) => [b.id, b.name]));
-      return (profiles ?? []).map((p: any) => ({
-        ...p,
-        roles: rolesByUser.get(p.id) ?? [],
-        branch_name: p.branch_id ? branchById.get(p.branch_id) : null,
-      })).filter((p: any) => p.roles.some((r: AppRole) => r !== "customer"));
+      return (profiles ?? [])
+        .map((p: any) => ({
+          ...p,
+          roles: rolesByUser.get(p.id) ?? [],
+          branch_name: p.branch_id ? branchById.get(p.branch_id) : null,
+        }))
+        .filter((p: any) => p.roles.some((r: AppRole) => r !== "customer"));
     },
   });
 
-  if (isLoading) return <PageShell><div className="flex justify-center py-20"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div></PageShell>;
+  if (isLoading)
+    return (
+      <PageShell>
+        <div className="flex justify-center py-20">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        </div>
+      </PageShell>
+    );
 
   const staff = data ?? [];
   const activeCount = staff.filter((s: any) => s.is_active).length;
-  const adminCount = staff.filter((s: any) => s.roles.includes("super_admin") || s.roles.includes("director")).length;
+  const adminCount = staff.filter(
+    (s: any) => s.roles.includes("super_admin") || s.roles.includes("director"),
+  ).length;
 
   return (
     <PageShell>
@@ -47,7 +60,11 @@ function StaffPage() {
       </div>
 
       {staff.length === 0 ? (
-        <EmptyState title="No staff yet" message="Staff accounts will appear here once roles are assigned." icon={UserCog} />
+        <EmptyState
+          title="No staff yet"
+          message="Staff accounts will appear here once roles are assigned."
+          icon={UserCog}
+        />
       ) : (
         <div className="rounded-2xl bg-card border shadow-card overflow-hidden">
           <table className="w-full text-sm">
@@ -67,14 +84,21 @@ function StaffPage() {
                   <td className="px-6 py-3">
                     <div className="flex flex-wrap gap-1.5">
                       {s.roles.map((r: AppRole) => (
-                        <span key={r} className="rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-medium">{roleLabel(r)}</span>
+                        <span
+                          key={r}
+                          className="rounded-full bg-primary/10 text-primary px-2.5 py-0.5 text-xs font-medium"
+                        >
+                          {roleLabel(r)}
+                        </span>
                       ))}
                     </div>
                   </td>
                   <td className="px-6 py-3 text-muted-foreground">{s.branch_name ?? "—"}</td>
                   <td className="px-6 py-3 text-muted-foreground">{s.phone ?? "—"}</td>
                   <td className="px-6 py-3">
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${s.is_active ? "bg-success/10 text-success" : "bg-muted text-muted-foreground"}`}>
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${s.is_active ? "bg-success/10 text-success" : "bg-muted text-muted-foreground"}`}
+                    >
                       {s.is_active ? "Active" : "Disabled"}
                     </span>
                   </td>

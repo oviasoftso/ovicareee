@@ -4,10 +4,12 @@ export async function logAudit(
   action: string,
   tableName: string,
   recordId: string,
-  details?: Record<string, unknown>
+  details?: Record<string, unknown>,
 ) {
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     await supabase.from("audit_logs").insert({
       action,
       table_name: tableName,

@@ -1,6 +1,14 @@
 import { ReactNode } from "react";
 
-export function PageHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: ReactNode }) {
+export function PageHeader({
+  title,
+  subtitle,
+  action,
+}: {
+  title: string;
+  subtitle?: string;
+  action?: ReactNode;
+}) {
   return (
     <div className="flex items-start justify-between gap-4 mb-8">
       <div>
@@ -16,7 +24,19 @@ export function PageShell({ children }: { children: ReactNode }) {
   return <div className="p-6 md:p-10 max-w-[1600px] mx-auto">{children}</div>;
 }
 
-export function StatCard({ label, value, hint, icon: Icon, tone = "primary" }: { label: string; value: ReactNode; hint?: string; icon: any; tone?: "primary" | "amber" | "violet" | "danger" | "success" }) {
+export function StatCard({
+  label,
+  value,
+  hint,
+  icon: Icon,
+  tone = "primary",
+}: {
+  label: string;
+  value: ReactNode;
+  hint?: string;
+  icon: any;
+  tone?: "primary" | "amber" | "violet" | "danger" | "success";
+}) {
   const tones: Record<string, string> = {
     primary: "from-primary to-primary-light",
     amber: "from-amber to-amber",
@@ -32,7 +52,9 @@ export function StatCard({ label, value, hint, icon: Icon, tone = "primary" }: {
           <div className="mt-2 text-3xl font-display font-bold text-mono">{value}</div>
           {hint && <div className="mt-1 text-xs text-muted-foreground">{hint}</div>}
         </div>
-        <div className={`h-11 w-11 rounded-xl bg-gradient-to-br ${tones[tone]} flex items-center justify-center shadow-glow`}>
+        <div
+          className={`h-11 w-11 rounded-xl bg-gradient-to-br ${tones[tone]} flex items-center justify-center shadow-glow`}
+        >
           <Icon className="h-5 w-5 text-white" />
         </div>
       </div>
@@ -40,7 +62,15 @@ export function StatCard({ label, value, hint, icon: Icon, tone = "primary" }: {
   );
 }
 
-export function EmptyState({ title, message, icon: Icon }: { title: string; message: string; icon: any }) {
+export function EmptyState({
+  title,
+  message,
+  icon: Icon,
+}: {
+  title: string;
+  message: string;
+  icon: any;
+}) {
   return (
     <div className="rounded-2xl border-2 border-dashed p-16 text-center bg-card">
       <div className="mx-auto h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-4">

@@ -10,8 +10,10 @@ export const Route = createFileRoute("/customer/loyalty")({ component: CustomerL
 
 function tierInfo(points: number) {
   if (points >= 2000) return { name: "Platinum", color: "text-violet-600", next: null, needed: 0 };
-  if (points >= 1000) return { name: "Gold", color: "text-amber-600", next: "Platinum", needed: 2000 - points };
-  if (points >= 500) return { name: "Silver", color: "text-gray-500", next: "Gold", needed: 1000 - points };
+  if (points >= 1000)
+    return { name: "Gold", color: "text-amber-600", next: "Platinum", needed: 2000 - points };
+  if (points >= 500)
+    return { name: "Silver", color: "text-gray-500", next: "Gold", needed: 1000 - points };
   return { name: "Bronze", color: "text-amber-800", next: "Silver", needed: 500 - points };
 }
 
@@ -22,10 +24,15 @@ function CustomerLoyalty() {
     queryKey: ["customer-loyalty", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const { data: patient } = await supabase.from("patients").select("id, loyalty_points").eq("user_id", user.id).single();
+      const { data: patient } = await supabase
+        .from("patients")
+        .select("id, loyalty_points")
+        .eq("user_id", user.id)
+        .single();
       if (!patient) return null;
 
-      const { data: transactions } = await supabase.from("loyalty_transactions")
+      const { data: transactions } = await supabase
+        .from("loyalty_transactions")
         .select("*")
         .eq("patient_id", patient.id)
         .order("created_at", { ascending: false })
@@ -45,24 +52,36 @@ function CustomerLoyalty() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
         <StatCard label="Total Points" value={String(points)} icon={Award} tone="primary" />
         <StatCard label="Current Tier" value={tier.name} icon={TrendingUp} tone="amber" />
-        <StatCard label={tier.next ? `Points to ${tier.next}` : "Top Tier"} value={tier.next ? String(tier.needed) : "Max"} icon={Gift} tone="violet" />
+        <StatCard
+          label={tier.next ? `Points to ${tier.next}` : "Top Tier"}
+          value={tier.next ? String(tier.needed) : "Max"}
+          icon={Gift}
+          tone="violet"
+        />
       </div>
 
       {tier.next && (
         <div className="rounded-xl bg-card border p-6 shadow-card mb-6">
           <h3 className="font-display font-semibold mb-3">Tier Progress</h3>
           <div className="w-full bg-muted rounded-full h-3">
-            <div className="gradient-primary h-3 rounded-full transition-all" style={{ width: `${Math.min(100, (points / (points + tier.needed)) * 100)}%` }} />
+            <div
+              className="gradient-primary h-3 rounded-full transition-all"
+              style={{ width: `${Math.min(100, (points / (points + tier.needed)) * 100)}%` }}
+            />
           </div>
           <div className="flex justify-between mt-2 text-sm text-muted-foreground">
             <span>{tier.name}</span>
-            <span>{tier.next} ({tier.needed} pts away)</span>
+            <span>
+              {tier.next} ({tier.needed} pts away)
+            </span>
           </div>
         </div>
       )}
 
       <div className="rounded-xl bg-card border shadow-card overflow-hidden">
-        <div className="px-6 py-4 border-b"><h3 className="font-display font-semibold">Transaction History</h3></div>
+        <div className="px-6 py-4 border-b">
+          <h3 className="font-display font-semibold">Transaction History</h3>
+        </div>
         {patientData?.transactions.length === 0 ? (
           <div className="p-8 text-center text-muted-foreground">No loyalty transactions yet.</div>
         ) : (
@@ -79,10 +98,16 @@ function CustomerLoyalty() {
             <tbody>
               {(patientData?.transactions ?? []).map((tx: any) => (
                 <tr key={tx.id} className="border-t hover:bg-muted/30">
-                  <td className="px-6 py-3 text-muted-foreground text-xs">{fmtDateTime(tx.created_at)}</td>
+                  <td className="px-6 py-3 text-muted-foreground text-xs">
+                    {fmtDateTime(tx.created_at)}
+                  </td>
                   <td className="px-6 py-3 capitalize">{tx.transaction_type}</td>
-                  <td className="px-6 py-3 text-right text-green-600 text-mono">{tx.points_earned > 0 ? `+${tx.points_earned}` : "—"}</td>
-                  <td className="px-6 py-3 text-right text-red-600 text-mono">{tx.points_redeemed > 0 ? `-${tx.points_redeemed}` : "—"}</td>
+                  <td className="px-6 py-3 text-right text-green-600 text-mono">
+                    {tx.points_earned > 0 ? `+${tx.points_earned}` : "—"}
+                  </td>
+                  <td className="px-6 py-3 text-right text-red-600 text-mono">
+                    {tx.points_redeemed > 0 ? `-${tx.points_redeemed}` : "—"}
+                  </td>
                   <td className="px-6 py-3 text-right font-medium text-mono">{tx.balance_after}</td>
                 </tr>
               ))}

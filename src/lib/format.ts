@@ -6,9 +6,18 @@ export const fmtNumber = (n: number | string | null | undefined) =>
   Number(n ?? 0).toLocaleString("en-US");
 export const fmtDate = (d: string | Date | null | undefined) => {
   if (!d) return "—";
-  return new Date(d).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" });
+  return new Date(d).toLocaleDateString("en-US", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 };
 export const fmtDateTime = (d: string | Date | null | undefined) => {
   if (!d) return "—";
-  return new Date(d).toLocaleString("en-US", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  return new Date(d).toLocaleString("en-US", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };

@@ -3,8 +3,13 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
 export type AppRole =
-  | "super_admin" | "director" | "branch_manager" | "pharmacist"
-  | "cashier" | "inventory_clerk" | "customer";
+  | "super_admin"
+  | "director"
+  | "branch_manager"
+  | "pharmacist"
+  | "cashier"
+  | "inventory_clerk"
+  | "customer";
 
 export interface Profile {
   id: string;
@@ -29,8 +34,13 @@ interface AuthCtx {
 const Ctx = createContext<AuthCtx | undefined>(undefined);
 
 const ROLE_PRIORITY: AppRole[] = [
-  "super_admin", "director", "branch_manager",
-  "pharmacist", "cashier", "inventory_clerk", "customer",
+  "super_admin",
+  "director",
+  "branch_manager",
+  "pharmacist",
+  "cashier",
+  "inventory_clerk",
+  "customer",
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -50,13 +60,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, s) => {
       setSession(s);
       setUser(s?.user ?? null);
       if (s?.user) {
-        setTimeout(() => { loadUserData(s.user.id); }, 0);
+        setTimeout(() => {
+          loadUserData(s.user.id);
+        }, 0);
       } else {
-        setProfile(null); setRoles([]);
+        setProfile(null);
+        setRoles([]);
       }
     });
     supabase.auth.getSession().then(({ data }) => {
@@ -76,11 +91,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     : null;
 
   return (
-    <Ctx.Provider value={{
-      user, session, profile, roles, primaryRole, loading,
-      signOut: async () => { await supabase.auth.signOut(); },
-      refresh: async () => { if (user) await loadUserData(user.id); },
-    }}>
+    <Ctx.Provider
+      value={{
+        user,
+        session,
+        profile,
+        roles,
+        primaryRole,
+        loading,
+        signOut: async () => {
+          await supabase.auth.signOut();
+        },
+        refresh: async () => {
+          if (user) await loadUserData(user.id);
+        },
+      }}
+    >
       {children}
     </Ctx.Provider>
   );
@@ -94,18 +120,29 @@ export function useAuth() {
 
 export function roleHomeRoute(role: AppRole | null): string {
   switch (role) {
-    case "super_admin": return "/app/super-admin";
-    case "director": return "/app/financials";
-    case "branch_manager": return "/app/dashboard";
-    case "pharmacist": return "/app/prescriptions";
-    case "cashier": return "/app/pos";
-    case "inventory_clerk": return "/app/inventory";
-    case "customer": return "/customer/dashboard";
-    default: return "/login";
+    case "super_admin":
+      return "/app/super-admin";
+    case "director":
+      return "/app/financials";
+    case "branch_manager":
+      return "/app/dashboard";
+    case "pharmacist":
+      return "/app/prescriptions";
+    case "cashier":
+      return "/app/pos";
+    case "inventory_clerk":
+      return "/app/inventory";
+    case "customer":
+      return "/customer/dashboard";
+    default:
+      return "/login";
   }
 }
 
 export function roleLabel(role: AppRole | null): string {
   if (!role) return "User";
-  return role.split("_").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+  return role
+    .split("_")
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
 }
