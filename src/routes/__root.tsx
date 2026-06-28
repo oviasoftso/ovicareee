@@ -106,6 +106,8 @@ function RegisterSW() {
               }
             });
           });
+          // Try to update the service worker to get the latest version
+          registration.update();
         })
         .catch(error => {
           console.error('SW registration failed: ', error);
